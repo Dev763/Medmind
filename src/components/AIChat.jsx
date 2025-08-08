@@ -25,8 +25,10 @@ function AIChat() {
   const chatBodyRef = useRef(null);
   const fileInputRef = useRef(null);
 
-  const API_KEY = "AIzaSyCmifq4Ydzl_OoK05PJNYnyenivhg3nVzA";
-  const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`;
+  const API_KEY = import.meta.env.VITE_API_KEY;
+  const API_URL = import.meta.env.VITE_API_URL;
+  const fullUrl = `${API_URL}?key=${API_KEY}`;
+
 
   // Function to generate system prompt with current medical data
   const getSystemPrompt = () => {
@@ -180,13 +182,14 @@ Patient Context:
     });
 
     try {
-      const response = await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: chatHistory.current
-        })
-      });
+   const response = await fetch(fullUrl, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({ contents: chatHistory.current })
+});
+
 
       const data = await response.json();
       if (!response.ok) throw new Error(data.error?.message || "Failed to get response");
